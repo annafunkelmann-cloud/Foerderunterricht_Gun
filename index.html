@@ -77,7 +77,7 @@
   <div class="wrap">
     <span class="pill">GRAPHEN-TEST</span> <span style="font-weight:700;font-size:13px"> Mathematik · FOS 11 · FOSBOS Bamberg</span>
     <h1>Vorbereitung Schulaufgabe</h1>
-    <div class="sub">Sieben Runden · Kopfrechnen · ohne Anmeldung</div>
+    <div class="sub">Acht Runden · Kopfrechnen · ohne Anmeldung</div>
     <nav id="nav" aria-label="Runden"></nav>
   </div>
 </header>
@@ -240,7 +240,7 @@ const ROUNDS = [];
               : 'Prüfen Sie den roten Punkt P('+fmt(xp)+' | '+fmt(yp)+'): Der Term liefert dort y = '+fmt(k.a*s*s+it.e)+'. Die Parabel ist hier zu '+(Math.abs(k.a)>Math.abs(it.a)?'eng':'weit')+'.'
         }));
       },
-      hint1:"Lesen Sie zuerst den Scheitelpunkt S(d | e) ab. Öffnet sich die Parabel nach oben oder nach unten?",
+      hint1:"Lesen Sie zuerst den Scheitelpunkt S(x_s | y_s) ab. Öffnet sich die Parabel nach oben oder nach unten?",
       hint2:"Das Vorzeichen in der Klammer ist umgekehrt: Liegt der Scheitel bei x = −2, steht (x + 2) in der Klammer. Prüfen Sie zuletzt den roten Punkt.",
       solution:'<span class="m">'+esc(termStr(it.a,it.d,it.e))+'</span> (Scheitelpunkt S('+fmt(it.d)+' | '+fmt(it.e)+'), a = '+fmt(it.a)+')'
     }); })
@@ -258,7 +258,7 @@ const ROUNDS = [];
     name:"② Scheitelpunkt ablesen", short:"Scheitelpunkt und a ablesen", heft:"B3 (Heft)",
     questions: items.map(it=>({
       type:"input",
-      text:"Lesen Sie den Scheitelpunkt S(d | e) ab. Bestimmen Sie dann a mit dem roten Punkt (er liegt einen Schritt rechts vom Scheitel).",
+      text:"Lesen Sie den Scheitelpunkt S(x_s | y_s) ab. Bestimmen Sie dann a mit dem roten Punkt (er liegt einen Schritt rechts vom Scheitel).",
       visual:()=>plot({...it.r, fn:x=>it.a*(x-it.d)**2+it.e, pts:[[it.d+1,it.a+it.e]]}),
       fields:[{k:"d",label:"d ="},{k:"e",label:"e ="},{k:"a",label:"a ="}],
       answer:{d:it.d,e:it.e,a:it.a},
@@ -396,6 +396,26 @@ const ROUNDS = [];
      hint1:"Jeder Pfad von links nach rechts ist ein Ergebnis.", hint2:"3 Getränke, jeweils 2 Möglichkeiten bei der Brezel.", solution:'3 · 2 = 6 Pfade, also |Ω| = 6.'},
   ];
   ROUNDS.push({ name:"⑦ Baum und Vereinbarkeit", short:"Baum und Vereinbarkeit", heft:"C7 (Heft)", questions:q });
+})();
+
+/* Runde 8: Lineare Funktionen (Kopfrechnen) */
+(function(){
+  const mcPt=(truth,whyTrue,whyFalse)=>()=>shuffle([{html:"liegt auf der Geraden",ok:truth,why:truth?"":whyFalse},{html:"liegt nicht auf der Geraden",ok:!truth,why:truth?whyTrue:""}]);
+  const q=[
+    {type:"input", text:"f(x) = 2x − 6. Wie lautet die Nullstelle?", fields:[{k:"p",label:"x ="}], answer:{p:3},
+     hint1:"Setzen Sie f(x) = 0: 2x − 6 = 0.", hint2:"Bringen Sie die 6 auf die andere Seite: 2x = 6. Dann durch 2.", solution:'2x − 6 = 0 → 2x = 6 → x = 3.'},
+    {type:"input", text:"g(x) = −0,5x + 3. Wie lautet die Nullstelle?", fields:[{k:"p",label:"x ="}], answer:{p:6},
+     hint1:"Setzen Sie g(x) = 0: −0,5x + 3 = 0.", hint2:"Bringen Sie die 3 auf die andere Seite: 3 = 0,5x. Die Hälfte von welcher Zahl ist 3?", solution:'−0,5x + 3 = 0 → 3 = 0,5x → x = 6.'},
+    {type:"mc", text:"f(x) = −2x + 6. Der Punkt P(2 | 2): Was gilt?", options:mcPt(true,"f(2) = 2 stimmt mit der y-Koordinate überein.",""),
+     hint1:"Punktprobe: Setzen Sie die x-Koordinate 2 in f(x) ein.", hint2:"f(2) = −2·2 + 6. Vergleichen Sie mit der y-Koordinate 2.", solution:'f(2) = −4 + 6 = 2, das passt zu y = 2. P liegt auf der Geraden.'},
+    {type:"mc", text:"f(x) = −2x + 6. Der Punkt Q(4 | −3): Was gilt?", options:mcPt(false,"","f(4) = −2, nicht −3."),
+     hint1:"Punktprobe: Setzen Sie die x-Koordinate 4 in f(x) ein.", hint2:"f(4) = −2·4 + 6. Vergleichen Sie mit der y-Koordinate −3.", solution:'f(4) = −8 + 6 = −2, aber y = −3. Q liegt nicht auf der Geraden.'},
+    {type:"input", text:"Ein Fitnessstudio verlangt einmalig 10 € Anmeldegebühr und 20 € pro Monat. Wie viel € kostet es nach 6 Monaten insgesamt?", fields:[{k:"p",label:"K(6) ="}], answer:{p:130},
+     hint1:"Term: K(x) = 20x + 10. Setzen Sie x = 6 ein.", hint2:"20 mal 6 sind 120. Dazu kommen einmalig 10 €.", solution:'K(6) = 20·6 + 10 = 130 €.'},
+    {type:"input", text:"Die Geraden y = 2x + 1 und y = −x + 7 schneiden sich. Bei welchem x liegt der Schnittpunkt?", fields:[{k:"p",label:"x ="}], answer:{p:2},
+     hint1:"Setzen Sie beide Terme gleich: 2x + 1 = −x + 7.", hint2:"Bringen Sie −x nach links und die 1 nach rechts: 3x = 6.", solution:'2x + 1 = −x + 7 → 3x = 6 → x = 2 (dann y = 5).'},
+  ];
+  ROUNDS.push({ name:"⑧ Lineare Funktionen", short:"Lineare Funktionen", heft:"B5 bis B8 (Heft)", questions:q });
 })();
 
 /* ---------- Zustand (nur im Arbeitsspeicher) ---------- */
