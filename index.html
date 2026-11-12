@@ -1,0 +1,571 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Graphen-Test · Vorbereitung Schulaufgabe</title>
+<style>
+  :root{
+    --blue:#037EC6; --blue-d:#02609a; --ink:#1F2933; --muted:#5f6f7c; --line:#d5dee5;
+    --ok:#1e7b45; --ok-bg:#ddf1e4; --bad:#b33a24; --bad-bg:#fbe3de; --hint-bg:#fff6d6; --hint:#9a6b00;
+    --card:#ffffff; --bg:#f3f6f9;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  .m{font-family:Cambria,"Times New Roman",serif;white-space:nowrap}
+  .ov{text-decoration:overline;text-decoration-thickness:1.5px}
+  header{background:#fff;border-bottom:3px solid var(--blue);padding:14px 16px}
+  .wrap{max-width:760px;margin:0 auto;padding:0 14px}
+  header .wrap{padding:0}
+  .pill{display:inline-block;background:var(--ink);color:#fff;font-weight:700;font-size:12px;letter-spacing:.12em;padding:3px 9px;border-radius:3px}
+  h1{font-family:Cambria,"Times New Roman",serif;font-size:27px;line-height:1.15;margin:8px 0 2px}
+  .sub{color:var(--blue);font-weight:700;font-size:15px}
+  nav{display:flex;gap:8px;overflow-x:auto;padding:14px 0 6px;margin:0;-webkit-overflow-scrolling:touch}
+  nav button{flex:0 0 auto;border:2px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;padding:7px 14px;font:inherit;font-size:15px;font-weight:600;cursor:pointer}
+  nav button[aria-current="true"]{border-color:var(--blue);background:var(--blue);color:#fff}
+  nav button .dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:#c3ced6;margin-right:7px}
+  nav button.done .dot{background:var(--ok)}
+  nav button[aria-current="true"] .dot{box-shadow:0 0 0 2px #fff inset}
+  main{padding:6px 0 40px}
+  .card{background:var(--card);border:2px solid var(--ink);border-radius:12px;overflow:hidden;margin-top:10px}
+  .card-h{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 14px;background:#ddf1e4;border-bottom:1px solid var(--ink)}
+  .card-h b{font-family:Cambria,"Times New Roman",serif;font-size:19px}
+  .card-h span{font-size:13px;color:var(--muted);font-weight:700}
+  .card-b{padding:14px}
+  .q{margin:0 0 10px;font-weight:600}
+  .graph{width:100%;max-width:440px;display:block;margin:4px auto 12px;background:#fff;border:1px solid var(--line);border-radius:8px}
+  .opts{display:grid;gap:9px}
+  .opt{display:block;width:100%;text-align:left;border:2px solid var(--line);background:#fff;border-radius:10px;padding:11px 13px;font:inherit;font-size:18px;cursor:pointer;color:var(--ink)}
+  .opt:hover:not(:disabled){border-color:var(--blue)}
+  .opt:focus-visible,.btn:focus-visible,nav button:focus-visible,input:focus-visible{outline:3px solid #ffbf47;outline-offset:2px}
+  .opt.wrong{border-color:var(--bad);background:var(--bad-bg)}
+  .opt.right{border-color:var(--ok);background:var(--ok-bg)}
+  .opt:disabled{cursor:default}
+  .why{font-size:14.5px;color:var(--bad);margin:4px 2px 0 6px;font-weight:600}
+  .fields{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:6px 0 10px}
+  .fields label{display:flex;align-items:center;gap:6px;font-weight:600}
+  .fields input{width:84px;font:inherit;font-size:18px;padding:8px 10px;border:2px solid var(--line);border-radius:8px;text-align:center}
+  .fields input.bad{border-color:var(--bad);background:var(--bad-bg)}
+  .fields input.ok{border-color:var(--ok);background:var(--ok-bg)}
+  .tf{display:flex;gap:10px}
+  .tf .opt{text-align:center;font-weight:700}
+  .row{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px;align-items:center}
+  .btn{border:0;border-radius:999px;padding:10px 18px;font:inherit;font-size:16px;font-weight:700;cursor:pointer}
+  .btn.primary{background:var(--blue);color:#fff}
+  .btn.primary:hover{background:var(--blue-d)}
+  .btn.ghost{background:#fff;color:var(--ink);border:2px solid var(--line)}
+  .btn:disabled{opacity:.45;cursor:default}
+  .hint{margin-top:12px;background:var(--hint-bg);border-left:5px solid #e0a800;border-radius:6px;padding:9px 12px;font-size:16px}
+  .hint small{display:block;color:var(--hint);font-weight:800;letter-spacing:.1em;font-size:11.5px;margin-bottom:2px}
+  .fb{margin-top:12px;border-radius:8px;padding:10px 12px;font-weight:600}
+  .fb.ok{background:var(--ok-bg);color:#14532d}
+  .fb.bad{background:var(--bad-bg);color:#7f2615}
+  .fb .m{font-weight:700}
+  .prog{font-size:14px;color:var(--muted);font-weight:700;margin:12px 2px 0}
+  .res table{width:100%;border-collapse:collapse;margin:8px 0}
+  .res td,.res th{padding:9px 6px;border-bottom:1px solid var(--line);text-align:left;font-size:16px}
+  .res th{font-size:13px;color:var(--muted);letter-spacing:.06em}
+  .tag{display:inline-block;border-radius:999px;padding:2px 10px;font-size:13px;font-weight:800}
+  .tag.g{background:var(--ok-bg);color:var(--ok)} .tag.y{background:#fff2c2;color:#8a6a00} .tag.r{background:var(--bad-bg);color:var(--bad)}
+  footer{max-width:760px;margin:0 auto;padding:6px 14px 30px;color:var(--muted);font-size:13.5px}
+  @media (max-width:480px){h1{font-size:23px} .opt{font-size:17px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <span class="pill">GRAPHEN-TEST</span> <span style="font-weight:700;font-size:13px"> Mathematik · FOS 11 · FOSBOS Bamberg</span>
+    <h1>Vorbereitung Schulaufgabe</h1>
+    <div class="sub">Sieben Runden · Kopfrechnen · ohne Anmeldung</div>
+    <nav id="nav" aria-label="Runden"></nav>
+  </div>
+</header>
+<main class="wrap" id="main" aria-live="polite"></main>
+<footer>Dieser Test speichert nichts und sendet keine Daten. Tipps: erst Tipp 1, dann Tipp 2, zuletzt die Lösung. Die Aufgabentypen passen zu Station D im Heft („Theke · Digital“).</footer>
+
+<script>
+"use strict";
+/* ---------- Hilfsfunktionen ---------- */
+const MINUS = "−";
+function fmt(n){ return String(n).replace(".", ",").replace("-", MINUS); }
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;"); }
+function ov(s){ return '<span class="ov">'+s+'</span>'; }
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]];} return a; }
+function parseNum(s){
+  s = String(s).trim().replace(/−/g,"-").replace(",", ".").replace(/\s+/g,"");
+  if(s==="") return NaN;
+  if(s.endsWith("%")){ const pv=parseNum(s.slice(0,-1)); return isNaN(pv)?NaN:pv/100; }
+  const m = s.match(/^(-?\d+(?:\.\d+)?)\/(\d+(?:\.\d+)?)$/);
+  if(m) return parseFloat(m[1])/parseFloat(m[2]);
+  return /^-?\d+(\.\d+)?$/.test(s) ? parseFloat(s) : NaN;
+}
+function termStr(a,d,e){
+  const aS = a===1 ? "" : a===-1 ? MINUS : fmt(a)+"·";
+  const sq = d===0 ? "x²" : (d>0 ? "(x "+MINUS+" "+fmt(d)+")²" : "(x + "+fmt(-d)+")²");
+  const eS = e===0 ? "" : (e>0 ? " + "+fmt(e) : " "+MINUS+" "+fmt(-e));
+  return "f(x) = "+aS+sq+eS;
+}
+function lineStr(m,t){
+  const mS = m===1 ? "" : m===-1 ? MINUS : fmt(m)+"·";
+  const tS = t===0 ? "" : (t>0 ? " + "+fmt(t) : " "+MINUS+" "+fmt(-t));
+  return "y = "+mS+"x"+tS;
+}
+
+/* ---------- Graph als SVG ---------- */
+let uid = 0;
+function plot({xmin,xmax,ymin,ymax,fn,fn2,pts=[],segment}){
+  const W=420,H=300,L=30,R=16,T=14,B=26, id="c"+(++uid);
+  const px=x=>L+(x-xmin)/(xmax-xmin)*(W-L-R), py=y=>H-B-(y-ymin)/(ymax-ymin)*(H-T-B);
+  let s='<svg class="graph" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Graph in einem Koordinatensystem">';
+  s+='<defs><clipPath id="'+id+'"><rect x="'+L+'" y="'+T+'" width="'+(W-L-R)+'" height="'+(H-T-B)+'"/></clipPath></defs>';
+  for(let x=Math.ceil(xmin);x<=xmax;x++){ s+='<line x1="'+px(x)+'" y1="'+T+'" x2="'+px(x)+'" y2="'+(H-B)+'" stroke="#d5dee5" stroke-width="1"/>'; }
+  for(let y=Math.ceil(ymin);y<=ymax;y++){ s+='<line x1="'+L+'" y1="'+py(y)+'" x2="'+(W-R)+'" y2="'+py(y)+'" stroke="#d5dee5" stroke-width="1"/>'; }
+  const ax = (xmin<=0&&xmax>=0)?px(0):L, ay=(ymin<=0&&ymax>=0)?py(0):H-B;
+  s+='<line x1="'+L+'" y1="'+ay+'" x2="'+(W-R+6)+'" y2="'+ay+'" stroke="#1F2933" stroke-width="1.6"/>';
+  s+='<line x1="'+ax+'" y1="'+(H-B)+'" x2="'+ax+'" y2="'+(T-6)+'" stroke="#1F2933" stroke-width="1.6"/>';
+  s+='<polygon points="'+(W-R+8)+','+ay+' '+(W-R)+','+(ay-3.5)+' '+(W-R)+','+(ay+3.5)+'" fill="#1F2933"/>';
+  s+='<polygon points="'+ax+','+(T-8)+' '+(ax-3.5)+','+T+' '+(ax+3.5)+','+T+'" fill="#1F2933"/>';
+  for(let x=Math.ceil(xmin);x<=xmax;x++){ if(x!==0) s+='<text x="'+px(x)+'" y="'+(ay+13)+'" font-size="11" text-anchor="middle" fill="#1F2933">'+fmt(x)+'</text>'; }
+  for(let y=Math.ceil(ymin);y<=ymax;y++){ if(y!==0) s+='<text x="'+(ax-5)+'" y="'+(py(y)+4)+'" font-size="11" text-anchor="end" fill="#1F2933">'+fmt(y)+'</text>'; }
+  s+='<text x="'+(W-R+2)+'" y="'+(ay-8)+'" font-size="12" font-style="italic" text-anchor="end">x</text>';
+  s+='<text x="'+(ax+8)+'" y="'+(T+6)+'" font-size="12" font-style="italic">y</text>';
+  if(fn){
+    let d=""; const N=240;
+    for(let i=0;i<=N;i++){ const x=xmin+(xmax-xmin)*i/N, y=fn(x); d+=(i?"L":"M")+px(x).toFixed(1)+","+py(y).toFixed(1); }
+    s+='<path d="'+d+'" fill="none" stroke="#037EC6" stroke-width="2.6" clip-path="url(#'+id+')"/>';
+  }
+  if(fn2){
+    let d2=""; const N2=240;
+    for(let i=0;i<=N2;i++){ const x=xmin+(xmax-xmin)*i/N2, y=fn2(x); d2+=(i?"L":"M")+px(x).toFixed(1)+","+py(y).toFixed(1); }
+    s+='<path d="'+d2+'" fill="none" stroke="#e07b00" stroke-width="2.6" clip-path="url(#'+id+')"/>';
+  }
+  pts.forEach(p=>{ s+='<circle cx="'+px(p[0])+'" cy="'+py(p[1])+'" r="5.2" fill="#d9381e" stroke="#fff" stroke-width="1.4"/>'; });
+  return s+'</svg>';
+}
+
+/* ---------- Venn-Diagramm als SVG ---------- */
+const AREAS = ["nur A","beide","nur B","außerhalb"];
+function venn(pattern){
+  const id="v"+(++uid), W=360,H=210, cA=[140,108], cB=[220,108], r=64, sh="#f6c453";
+  let s='<svg class="graph" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Venn-Diagramm mit zwei Kreisen A und B, einige Flächen sind gefärbt">';
+  s+='<defs>'+
+    '<clipPath id="'+id+'a"><circle cx="'+cA[0]+'" cy="'+cA[1]+'" r="'+r+'"/></clipPath>'+
+    '<mask id="'+id+'nb"><rect width="'+W+'" height="'+H+'" fill="#fff"/><circle cx="'+cB[0]+'" cy="'+cB[1]+'" r="'+r+'" fill="#000"/></mask>'+
+    '<mask id="'+id+'na"><rect width="'+W+'" height="'+H+'" fill="#fff"/><circle cx="'+cA[0]+'" cy="'+cA[1]+'" r="'+r+'" fill="#000"/></mask>'+
+    '<mask id="'+id+'no"><rect width="'+W+'" height="'+H+'" fill="#fff"/><circle cx="'+cA[0]+'" cy="'+cA[1]+'" r="'+r+'" fill="#000"/><circle cx="'+cB[0]+'" cy="'+cB[1]+'" r="'+r+'" fill="#000"/></mask>'+
+    '</defs>';
+  s+='<rect x="6" y="6" width="'+(W-12)+'" height="'+(H-12)+'" fill="#fff" stroke="#1F2933" stroke-width="2"/>';
+  if(pattern[3]) s+='<rect x="7" y="7" width="'+(W-14)+'" height="'+(H-14)+'" fill="'+sh+'" mask="url(#'+id+'no)"/>';
+  if(pattern[0]) s+='<circle cx="'+cA[0]+'" cy="'+cA[1]+'" r="'+r+'" fill="'+sh+'" mask="url(#'+id+'nb)"/>';
+  if(pattern[1]) s+='<circle cx="'+cB[0]+'" cy="'+cB[1]+'" r="'+r+'" fill="'+sh+'" clip-path="url(#'+id+'a)"/>';
+  if(pattern[2]) s+='<circle cx="'+cB[0]+'" cy="'+cB[1]+'" r="'+r+'" fill="'+sh+'" mask="url(#'+id+'na)"/>';
+  s+='<circle cx="'+cA[0]+'" cy="'+cA[1]+'" r="'+r+'" fill="none" stroke="#1F2933" stroke-width="2"/>';
+  s+='<circle cx="'+cB[0]+'" cy="'+cB[1]+'" r="'+r+'" fill="none" stroke="#1F2933" stroke-width="2"/>';
+  s+='<text x="20" y="28" font-size="17" font-family="Cambria,serif">Ω</text>';
+  s+='<text x="'+(cA[0]-44)+'" y="'+(cA[1]-52)+'" font-size="17" font-family="Cambria,serif" font-style="italic">A</text>';
+  s+='<text x="'+(cB[0]+36)+'" y="'+(cB[1]-52)+'" font-size="17" font-family="Cambria,serif" font-style="italic">B</text>';
+  return s+'</svg>';
+}
+/* Ausdrücke: Flächenmuster [nur A, beide, nur B, außerhalb] */
+const EXPR = {
+  and:   {h:'<span class="m">A ∩ B</span>', p:[0,1,0,0], w:"nur die Überschneidung"},
+  aNotB: {h:'<span class="m">A ∩ '+ov('B')+'</span>', p:[1,0,0,0], w:"den Kreis A ohne die Überschneidung"},
+  nAB:   {h:'<span class="m">'+ov('A')+' ∩ B</span>', p:[0,0,1,0], w:"den Kreis B ohne die Überschneidung"},
+  nor:   {h:'<span class="m">'+ov('A ∪ B')+'</span>', p:[0,0,0,1], w:"alles außerhalb beider Kreise"},
+  or:    {h:'<span class="m">A ∪ B</span>', p:[1,1,1,0], w:"beide Kreise zusammen"},
+  nand:  {h:'<span class="m">'+ov('A ∩ B')+'</span>', p:[1,0,1,1], w:"alles außer der Überschneidung"},
+  nAorB: {h:'<span class="m">'+ov('A')+' ∪ B</span>', p:[0,1,1,1], w:"alles außer „nur A“"},
+  AornB: {h:'<span class="m">A ∪ '+ov('B')+'</span>', p:[1,1,0,1], w:"alles außer „nur B“"},
+};
+
+
+/* ---------- Baumdiagramm als SVG (zweistufig, zweite Stufe unabhängig) ---------- */
+function bar(l){ return l.endsWith("!") ? l.slice(0,-1)+"̅" : l; }
+function tree(s1,s2){
+  const fmt=()=>"";
+  const rowH=30, n=s1.length*s2.length, W=420, H=n*rowH+18, x0=22, x1=150, x2=270;
+  let s='<svg class="graph" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Baumdiagramm">';
+  const cy0=H/2; let leaf=0;
+  s+='<circle cx="'+x0+'" cy="'+cy0+'" r="4" fill="#1F2933"/>';
+  s1.forEach((a,i)=>{
+    const top=9+leaf*rowH+rowH/2, bot=9+(leaf+s2.length-1)*rowH+rowH/2, cy=(top+bot)/2;
+    s+='<line x1="'+x0+'" y1="'+cy0+'" x2="'+(x1-14)+'" y2="'+cy+'" stroke="#1F2933" stroke-width="1.6"/>';
+    s+='<text x="'+((x0+x1-14)/2+(cy<cy0?-6:6))+'" y="'+((cy0+cy)/2+(cy<cy0?-6:15))+'" font-size="13" text-anchor="middle" fill="#037EC6" font-weight="700">'+fmt(a.p)+'</text>';
+    s+='<circle cx="'+x1+'" cy="'+cy+'" r="14" fill="#fff" stroke="#1F2933" stroke-width="1.6"/><text x="'+x1+'" y="'+(cy+5)+'" font-size="15" text-anchor="middle" font-family="Cambria,serif">'+bar(a.l)+'</text>';
+    s2.forEach((b,j)=>{
+      const cy2=9+leaf*rowH+rowH/2;
+      s+='<line x1="'+(x1+14)+'" y1="'+cy+'" x2="'+(x2-14)+'" y2="'+cy2+'" stroke="#1F2933" stroke-width="1.6"/>';
+      s+='<text x="'+((x1+x2)/2+(cy2<cy?-8:8))+'" y="'+((cy+cy2)/2+(cy2<cy?-4:15))+'" font-size="13" text-anchor="middle" fill="#037EC6" font-weight="700">'+fmt(b.p)+'</text>';
+      s+='<circle cx="'+x2+'" cy="'+cy2+'" r="14" fill="#fff" stroke="#1F2933" stroke-width="1.6"/><text x="'+x2+'" y="'+(cy2+5)+'" font-size="15" text-anchor="middle" font-family="Cambria,serif">'+bar(b.l)+'</text>';
+      s+='<text x="'+(x2+24)+'" y="'+(cy2+5)+'" font-size="15" font-family="Cambria,serif" fill="#1F2933">'+bar(a.l)+bar(b.l)+'</text>';
+      leaf++;
+    });
+  });
+  return s+'</svg>';
+}
+const TA=[{l:"B",p:0.6},{l:"C",p:0.4}], TB=[{l:"K",p:0.5},{l:"K!",p:0.5}];
+const TC=[{l:"W",p:0.5},{l:"S",p:0.3},{l:"T",p:0.2}], TD=[{l:"B",p:0.2},{l:"B!",p:0.8}];
+
+/* ---------- Aufgabenbank ---------- */
+const ROUNDS = [];
+
+/* Runde 1: Graph -> Gleichung (sechs Terme) */
+(function(){
+  const items = [
+    {a:1,  d:-1, e:-2, r:{xmin:-5,xmax:3,ymin:-3,ymax:6}},
+    {a:-1, d:2,  e:3,  r:{xmin:-2,xmax:6,ymin:-5,ymax:4}},
+    {a:0.5,d:-2, e:1,  r:{xmin:-5,xmax:1,ymin:-1,ymax:6}},
+    {a:2,  d:1,  e:-3, r:{xmin:-1,xmax:3,ymin:-4,ymax:6}},
+    {a:1,  d:3,  e:2,  r:{xmin:-1,xmax:7,ymin:-1,ymax:7}},
+  ];
+  ROUNDS.push({
+    name:"① Graph → Gleichung", short:"Graph zur Gleichung", heft:"B2, B3 und D1 (Heft)",
+    questions: items.map(it=>{ const s=Number.isInteger(it.a)?1:2, xp=it.d+s, yp=it.a*s*s+it.e; return ({
+      type:"mc",
+      text:"Welcher Term gehört zum Graphen? (Roter Punkt: liegt auf dem Graphen.)",
+      visual:()=>plot({...it.r, fn:x=>it.a*(x-it.d)**2+it.e, pts:[[xp,yp]]}),
+      options:()=>{
+        const c={a:it.a,d:it.d,e:it.e,ok:true};
+        let cand=[{a:it.a,d:-it.d,e:it.e},{a:it.a,d:it.d,e:-it.e},{a:-it.a,d:it.d,e:it.e},{a:it.a*2,d:it.d,e:it.e},{a:it.a/2,d:it.d,e:it.e},{a:it.a,d:-it.d,e:-it.e},{a:it.a,d:it.d+1,e:it.e}];
+        const seen=new Set([termStr(c.a,c.d,c.e)]), out=[];
+        for(const k of cand){ const t=termStr(k.a,k.d,k.e); if(!seen.has(t)){seen.add(t); out.push(k);} if(out.length===5) break; }
+        return shuffle([c,...out]).map(k=>({
+          html:'<span class="m">'+esc(termStr(k.a,k.d,k.e))+'</span>',
+          ok:!!k.ok,
+          why: k.ok ? "" : (k.d!==it.d||k.e!==it.e)
+            ? 'Der Scheitelpunkt dieses Terms ist S('+fmt(k.d)+' | '+fmt(k.e)+'), im Graphen liegt er bei S('+fmt(it.d)+' | '+fmt(it.e)+').'
+            : (Math.sign(k.a)!==Math.sign(it.a))
+              ? 'Dieser Term öffnet nach '+(k.a>0?'oben':'unten')+', der Graph nach '+(it.a>0?'oben':'unten')+'.'
+              : 'Prüfen Sie den roten Punkt P('+fmt(xp)+' | '+fmt(yp)+'): Der Term liefert dort y = '+fmt(k.a*s*s+it.e)+'. Die Parabel ist hier zu '+(Math.abs(k.a)>Math.abs(it.a)?'eng':'weit')+'.'
+        }));
+      },
+      hint1:"Lesen Sie zuerst den Scheitelpunkt S(d | e) ab. Öffnet sich die Parabel nach oben oder nach unten?",
+      hint2:"Das Vorzeichen in der Klammer ist umgekehrt: Liegt der Scheitel bei x = −2, steht (x + 2) in der Klammer. Prüfen Sie zuletzt den roten Punkt.",
+      solution:'<span class="m">'+esc(termStr(it.a,it.d,it.e))+'</span> (Scheitelpunkt S('+fmt(it.d)+' | '+fmt(it.e)+'), a = '+fmt(it.a)+')'
+    }); })
+  });
+})();
+
+/* Runde 2: Scheitelpunkt und a ablesen (Eingabe, Kopfrechnen) */
+(function(){
+  const items=[
+    {a:1,  d:1,  e:-2, r:{xmin:-2,xmax:4,ymin:-3,ymax:5}},
+    {a:-1, d:-2, e:3,  r:{xmin:-6,xmax:2,ymin:-3,ymax:4}},
+    {a:2,  d:1,  e:-3, r:{xmin:-2,xmax:4,ymin:-4,ymax:6}},
+  ];
+  ROUNDS.push({
+    name:"② Scheitelpunkt ablesen", short:"Scheitelpunkt und a ablesen", heft:"B3 (Heft)",
+    questions: items.map(it=>({
+      type:"input",
+      text:"Lesen Sie den Scheitelpunkt S(d | e) ab. Bestimmen Sie dann a mit dem roten Punkt (er liegt einen Schritt rechts vom Scheitel).",
+      visual:()=>plot({...it.r, fn:x=>it.a*(x-it.d)**2+it.e, pts:[[it.d+1,it.a+it.e]]}),
+      fields:[{k:"d",label:"d ="},{k:"e",label:"e ="},{k:"a",label:"a ="}],
+      answer:{d:it.d,e:it.e,a:it.a},
+      hint1:"Der Scheitelpunkt ist der tiefste Punkt (Parabel nach oben) oder der höchste Punkt (Parabel nach unten) des Graphen.",
+      hint2:"Gehen Sie vom Scheitel einen Schritt nach rechts bis zum roten Punkt. Um wie viel steigt oder fällt der Graph dabei? Genau diese Änderung ist a.",
+      solution:'S('+fmt(it.d)+' | '+fmt(it.e)+'). Vom Scheitel einen Schritt nach rechts: y ändert sich von '+fmt(it.e)+' auf '+fmt(it.a+it.e)+', also a = '+fmt(it.a)+' → <span class="m">'+esc(termStr(it.a,it.d,it.e))+'</span>'
+    }))
+  });
+})();
+
+/* Runde 3: Gerade im Graphen -> Gleichung */
+(function(){
+  const items=[
+    {m:2,t:-1,p2:[2,3],r:{xmin:-2,xmax:4,ymin:-4,ymax:5}},
+    {m:-1,t:3,p2:[3,0],r:{xmin:-2,xmax:5,ymin:-3,ymax:6}},
+    {m:0.5,t:1,p2:[4,3],r:{xmin:-3,xmax:5,ymin:-2,ymax:5}},
+    {m:-1.5,t:3,p2:[2,0],r:{xmin:-2,xmax:4,ymin:-3,ymax:6}},
+    {m:3,t:-2,p2:[2,4],r:{xmin:-2,xmax:4,ymin:-5,ymax:5}},
+  ];
+  ROUNDS.push({
+    name:"③ Gerade bestimmen", short:"Gerade aus dem Graphen", heft:"B1 (Heft)",
+    questions: items.map(it=>({
+      type:"mc",
+      text:"Welche Gleichung gehört zur Geraden? (Die roten Punkte liegen auf der Geraden.)",
+      visual:()=>plot({...it.r, fn:x=>it.m*x+it.t, pts:[[0,it.t],it.p2]}),
+      options:()=>{
+        const c={m:it.m,t:it.t,ok:true};
+        const cand=[{m:it.m,t:-it.t},{m:-it.m,t:it.t},{m:it.t,t:it.m},{m:it.m,t:it.t+1}];
+        const seen=new Set([lineStr(c.m,c.t)]), out=[];
+        for(const k of cand){ const s=lineStr(k.m,k.t); if(!seen.has(s)){seen.add(s); out.push(k);} if(out.length===3) break; }
+        return shuffle([c,...out]).map(k=>({
+          html:'<span class="m">'+esc(lineStr(k.m,k.t))+'</span>',
+          ok:!!k.ok,
+          why:k.ok?"":(k.t!==it.t
+            ? 'Der Graph schneidet die y-Achse bei '+fmt(it.t)+', dieser Term bei '+fmt(k.t)+'.'
+            : 'Die Steigung stimmt nicht: Von einem roten Punkt zum anderen ändert sich y um '+fmt(it.p2[1]-it.t)+' bei '+fmt(it.p2[0])+' Schritten nach rechts, also m = '+fmt(it.m)+'.')
+        }));
+      },
+      hint1:"Lesen Sie zuerst den y-Achsenabschnitt t ab: Dort schneidet die Gerade die y-Achse.",
+      hint2:"Steigung: Gehen Sie von einem roten Punkt zum anderen. m = (Änderung von y) ÷ (Änderung von x). Nach unten ist negativ.",
+      solution:'m = '+fmt(it.m)+', t = '+fmt(it.t)+' → <span class="m">'+esc(lineStr(it.m,it.t))+'</span>'
+    }))
+  });
+})();
+
+/* Runde 4: Venn -> Symbole */
+(function(){
+  const targets=["aNotB","nor","nAorB","and","nand"];
+  ROUNDS.push({
+    name:"④ Venn → Symbole", short:"Venn-Diagramm in Symbolen", heft:"A3 und D2 (Heft)",
+    questions: targets.map(key=>({
+      type:"mc",
+      text:"Welcher Term beschreibt die gefärbte Fläche?",
+      visual:()=>venn(EXPR[key].p),
+      options:()=>{
+        const others=shuffle(Object.keys(EXPR).filter(k=>k!==key)).slice(0,3);
+        return shuffle([key,...others]).map(k=>({
+          html:EXPR[k].h, ok:k===key,
+          why:k===key?"":'Dieser Term färbt '+EXPR[k].w+'. Gefärbt ist aber '+EXPR[key].w+'.'
+        }));
+      },
+      hint1:"∪ heißt „oder“ (alles aus mindestens einem Kreis), ∩ heißt „und“ (nur die Überschneidung), ein Überstrich heißt „nicht“ (alles außerhalb).",
+      hint2:"Teilen Sie das Diagramm in vier Flächen: nur A, beide, nur B, außerhalb. Welche davon sind gefärbt? Bei Überstrichen zuerst die Fläche innerhalb bestimmen und dann „umdrehen“.",
+      solution:EXPR[key].h+' – das ist '+EXPR[key].w+'.'
+    }))
+  });
+})();
+
+/* Runde 5: wahr oder falsch */
+(function(){
+  const S=[
+    {t:'Der Graph von <span class="m">f(x) = (x + 2)² − 1</span> hat den Scheitelpunkt <span class="m">S(2 | −1)</span>.', v:false,
+     h2:"Das Vorzeichen in der Klammer ist umgekehrt: (x + 2) bedeutet x-Koordinate −2.", why:'Falsch: Der Scheitelpunkt ist <span class="m">S(−2 | −1)</span>.'},
+    {t:'Zwei parallele Geraden haben dieselbe Steigung.', v:true,
+     h2:"Parallel heißt: gleiche Richtung, also gleiches m.", why:'Richtig: parallel ⇔ gleiche Steigung <span class="m">m</span>.'},
+    {t:'Zu <span class="m">y = 2x + 1</span> ist <span class="m">y = −2x + 1</span> orthogonal.', v:false,
+     h2:"Orthogonal heißt m₁ · m₂ = −1. Rechnen Sie 2 · (−2) nach.", why:'Falsch: Die orthogonale Steigung ist <span class="m">m = −1/2</span>, denn 2 · (−1/2) = −1.'},
+    {t:'Die Gleichung <span class="m">x² + 4 = 0</span> hat genau zwei Lösungen.', v:false,
+     h2:"Formen Sie um: x² = −4. Kann ein Quadrat negativ sein?", why:'Falsch: <span class="m">x² = −4</span> hat keine Lösung, ein Quadrat ist nie negativ.'},
+    {t:'<span class="m">'+ov('A')+' ∪ '+ov('B')+'</span> ist das Gegenereignis von <span class="m">A ∩ B</span>.', v:true,
+     h2:"Das ist die zweite Regel von De Morgan.", why:'Richtig: <span class="m">'+ov('A ∩ B')+' = '+ov('A')+' ∪ '+ov('B')+'</span> (De Morgan).'},
+    {t:'Das Gegenereignis von „mindestens eine Kiwi“ ist „genau eine Kiwi“.', v:false,
+     h2:"Welche Ergebnisse gehören weder zu „mindestens eine“ noch zu „genau eine“? Denken Sie an zwei Kiwis.", why:'Falsch: Das Gegenereignis ist „keine Kiwi“.'},
+    {t:'Beim dreimaligen Münzwurf hat der Ergebnisraum <span class="m">|Ω| = 8</span> Ergebnisse.', v:true,
+     h2:"Pro Wurf zwei Möglichkeiten: 2 · 2 · 2.", why:'Richtig: <span class="m">2 · 2 · 2 = 8</span> Pfade im Baumdiagramm.'},
+    {t:'Die Parabel <span class="m">f(x) = −2·(x − 1)² + 3</span> hat einen Tiefpunkt.', v:false,
+     h2:"Schauen Sie auf das Vorzeichen von a.", why:'Falsch: <span class="m">a = −2 &lt; 0</span>, die Parabel öffnet nach unten und hat einen Hochpunkt bei <span class="m">S(1 | 3)</span>.'},
+  ];
+  ROUNDS.push({
+    name:"⑤ Wahr oder falsch?", short:"Aussagen prüfen", heft:"D3 und B4 (Heft)",
+    questions: S.map(s=>({
+      type:"tf", text:"Wahr oder falsch?", statement:s.t, truth:s.v,
+      hint1:"Prüfen Sie ein Beispiel oder rechnen Sie die Aussage kurz nach.",
+      hint2:s.h2, solution:s.why
+    }))
+  });
+})();
+
+
+/* Runde 6: Schnittpunkte ablesen */
+(function(){
+  const items=[
+    {f:x=>x*x-2*x-3, g:x=>x-3, pts:[[0,-3],[3,0]], r:{xmin:-2,xmax:5,ymin:-5,ymax:6}, ft:"x² − 2x − 3", gt:"x − 3"},
+    {f:x=>x*x-4, g:x=>x-2, pts:[[-1,-3],[2,0]], r:{xmin:-3,xmax:4,ymin:-5,ymax:5}, ft:"x² − 4", gt:"x − 2"},
+    {f:x=>-x*x+4, g:x=>-x+2, pts:[[-1,3],[2,0]], r:{xmin:-3,xmax:4,ymin:-4,ymax:5}, ft:"−x² + 4", gt:"−x + 2"},
+  ];
+  ROUNDS.push({
+    name:"⑥ Schnittpunkte ablesen", short:"Schnittpunkte ablesen", heft:"C6 (Heft)",
+    questions: items.map(it=>({
+      type:"input",
+      text:"Der blaue Graph gehört zu f(x) = "+it.ft+", der orange Graph zu g(x) = "+it.gt+". Lesen Sie beide Schnittpunkte ab (Reihenfolge egal).",
+      visual:()=>plot({...it.r, fn:it.f, fn2:it.g}),
+      fields:[{k:"x1",label:"x₁ ="},{k:"y1",label:"y₁ ="},{k:"x2",label:"x₂ ="},{k:"y2",label:"y₂ ="}],
+      pairs:it.pts, answer:{},
+      hint1:"Ein Schnittpunkt liegt auf beiden Graphen. Suchen Sie die Stellen, an denen sich blau und orange treffen.",
+      hint2:"Lesen Sie erst die x-Koordinate an der Achse ab, dann die y-Koordinate. Kontrolle: Beide Funktionen müssen dort denselben y-Wert haben.",
+      solution:'S₁('+fmt(it.pts[0][0])+' | '+fmt(it.pts[0][1])+') und S₂('+fmt(it.pts[1][0])+' | '+fmt(it.pts[1][1])+'). Rechnerisch: f(x) = g(x) setzen.'
+    }))
+  });
+})();
+
+/* Runde 7: Baumdiagramm und Vereinbarkeit (Kopfrechnen, ohne Wahrscheinlichkeiten) */
+(function(){
+  const kiosk='Am Kiosk kaufen Kunden ein Brötchen (B) oder ein Croissant (C). Dazu nehmen sie Kaffee (K) oder keinen (K̅).';
+  const mcVer=(truth)=>()=>shuffle([{html:"vereinbar",ok:truth,why:truth?"":"Es gibt kein gemeinsames Ergebnis, die Schnittmenge ist leer."},{html:"unvereinbar",ok:!truth,why:truth?"Es gibt ein gemeinsames Ergebnis, die Schnittmenge ist nicht leer.":""}]);
+  const q=[
+    {type:"input", text:kiosk+" Zeichnen Sie den Baum im Kopf: Wie viele Ergebnisse hat der Ergebnisraum Ω?", visual:()=>tree(TA,TB),
+     fields:[{k:"p",label:"|Ω| ="}], answer:{p:4}, hint1:"Jeder Pfad von links nach rechts ist ein Ergebnis. Zählen Sie die Enden.", hint2:"2 Möglichkeiten beim Gebäck, jeweils 2 beim Kaffee.", solution:'Ω = {BK; BK̄; CK; CK̄}, also |Ω| = 4.'},
+    {type:"mc", text:kiosk+" G: „Ein Kunde nimmt Kaffee.“ C: „Ein Kunde kauft ein Croissant.“ Sind G und C vereinbar?", visual:()=>tree(TA,TB),
+     options:mcVer(true), hint1:"Vereinbar heißt: Es gibt mindestens ein Ergebnis, das zu beiden Ereignissen gehört.", hint2:"Schreiben Sie G = {BK; CK} und C = {CK; CK̄} auf und suchen Sie ein gemeinsames Ergebnis.", solution:'G ∩ C = {CK} ist nicht leer, also sind G und C vereinbar.'},
+    {type:"mc", text:kiosk+" B: „Ein Kunde kauft ein Brötchen.“ C: „Ein Kunde kauft ein Croissant.“ Sind B und C vereinbar?", visual:()=>tree(TA,TB),
+     options:mcVer(false), hint1:"Vereinbar heißt: Es gibt mindestens ein gemeinsames Ergebnis.", hint2:"Schreiben Sie beide Ereignisse aufzählend auf: B = {BK; BK̄}, C = {CK; CK̄}. Gibt es ein gemeinsames Ergebnis?", solution:'B ∩ C = { }: kein gemeinsames Ergebnis, also sind B und C unvereinbar.'},
+    {type:"mc", text:"Wie viele Ergebnisse hat der feinste Ergebnisraum dieses Baums (Wasser/Saft/Tee, mit oder ohne Brezel)?", visual:()=>tree(TC,TD),
+     options:()=>shuffle([{html:"3",ok:false,why:"Das sind nur die Äste der ersten Stufe."},{html:"5",ok:false,why:"Drei plus zwei ist falsch: Die Äste werden nicht addiert, sondern jeder Pfad zählt."},{html:"6",ok:true,why:""},{html:"8",ok:false,why:"Zählen Sie die Pfade am Baum: Jedes der 3 Getränke hat 2 Äste."}]),
+     hint1:"Jeder Pfad von links nach rechts ist ein Ergebnis.", hint2:"3 Getränke, jeweils 2 Möglichkeiten bei der Brezel.", solution:'3 · 2 = 6 Pfade, also |Ω| = 6.'},
+  ];
+  ROUNDS.push({ name:"⑦ Baum und Vereinbarkeit", short:"Baum und Vereinbarkeit", heft:"C7 (Heft)", questions:q });
+})();
+
+/* ---------- Zustand (nur im Arbeitsspeicher) ---------- */
+const state = { round:0, q:0, stats:ROUNDS.map(r=>({done:0, first:0, qs:r.questions.map(()=>null)})), view:"round" };
+const $main=document.getElementById("main"), $nav=document.getElementById("nav");
+let cur=null;     // aktuelle Frage-Instanz
+
+function renderNav(){
+  $nav.innerHTML="";
+  ROUNDS.forEach((r,i)=>{
+    const b=document.createElement("button");
+    const st=state.stats[i];
+    b.className = st.done===r.questions.length ? "done" : "";
+    b.setAttribute("aria-current", String(state.view==="round" && state.round===i));
+    b.innerHTML='<span class="dot"></span>'+esc(r.name.split(" ")[0])+' '+esc(r.short);
+    b.onclick=()=>{ state.round=i; state.view="round"; const firstOpen=st.qs.findIndex(x=>x===null); state.q=firstOpen<0?0:firstOpen; render(); };
+    $nav.appendChild(b);
+  });
+  const e=document.createElement("button");
+  e.setAttribute("aria-current", String(state.view==="result"));
+  e.innerHTML='<span class="dot"></span>Ergebnis';
+  e.onclick=()=>{ state.view="result"; render(); };
+  $nav.appendChild(e);
+}
+
+function render(){
+  renderNav();
+  if(state.view==="result"){ return renderResult(); }
+  const R=ROUNDS[state.round], Q=R.questions[state.q];
+  const st=state.stats[state.round];
+  cur={ q:Q, wrong:0, solved:false, hintLevel:0, opts:Q.type==="mc"?Q.options():null };
+  let h='<div class="prog">'+esc(R.name)+' · Aufgabe '+(state.q+1)+' von '+R.questions.length+'</div>';
+  h+='<section class="card"><div class="card-h"><b>'+esc(R.name)+'</b><span>Aufgabe '+(state.q+1)+'/'+R.questions.length+'</span></div><div class="card-b">';
+  h+='<p class="q">'+esc(Q.text)+'</p>';
+  if(Q.visual) h+=Q.visual();
+  if(Q.type==="mc"){
+    h+='<div class="opts" id="opts">';
+    cur.opts.forEach((o,i)=>{ h+='<div><button class="opt" data-i="'+i+'">'+o.html+'</button><div class="why" id="why'+i+'" hidden></div></div>'; });
+    h+='</div>';
+  } else if(Q.type==="input"){
+    h+='<div class="fields">'+Q.fields.map(f=>'<label>'+esc(f.label)+' <input inputmode="text" autocomplete="off" id="f_'+f.k+'" aria-label="'+esc(f.label)+'"></label>').join("")+'</div>';
+    h+='<div class="row" style="margin-top:0"><button class="btn primary" id="check">Prüfen</button></div>';
+  } else if(Q.type==="tf"){
+    h+='<p class="q" style="font-weight:500;font-size:18px;margin-top:4px">'+Q.statement+'</p>';
+    h+='<div class="tf"><button class="opt" data-v="true">wahr</button><button class="opt" data-v="false">falsch</button></div>';
+  }
+  h+='<div id="fb" role="status"></div><div id="hint"></div>';
+  h+='<div class="row"><button class="btn ghost" id="hbtn">Tipp 1</button><span style="flex:1"></span><button class="btn primary" id="next" hidden></button></div>';
+  h+='</div></section>';
+  $main.innerHTML=h;
+  wire();
+}
+
+function wire(){
+  const Q=cur.q;
+  document.getElementById("hbtn").onclick=nextHint;
+  if(Q.type==="mc"){
+    document.querySelectorAll("#opts .opt").forEach(btn=>{
+      btn.onclick=()=>{
+        if(cur.solved) return;
+        const i=+btn.dataset.i, o=cur.opts[i];
+        if(o.ok){ btn.classList.add("right"); solve(true); }
+        else { cur.wrong++; btn.classList.add("wrong"); btn.disabled=true; const w=document.getElementById("why"+i); w.innerHTML=o.why; w.hidden=false; feedback("bad","Noch nicht. Lesen Sie die Rückmeldung und versuchen Sie es erneut."); }
+      };
+    });
+  } else if(Q.type==="input"){
+    const inputs=Q.fields.map(f=>document.getElementById("f_"+f.k));
+    const check=()=>{
+      if(cur.solved) return;
+      if(Q.pairs){
+        const v=inputs.map(i=>parseNum(i.value)); inputs.forEach(i=>i.classList.remove("ok","bad"));
+        if(v.some(isNaN)){ feedback("bad","Bitte tragen Sie vier Zahlen ein (x und y von beiden Punkten)."); return; }
+        const A=Q.pairs, e=(a,b)=>Math.abs(a-b)<1e-9;
+        const m1=e(v[0],A[0][0])&&e(v[1],A[0][1])&&e(v[2],A[1][0])&&e(v[3],A[1][1]);
+        const m2=e(v[0],A[1][0])&&e(v[1],A[1][1])&&e(v[2],A[0][0])&&e(v[3],A[0][1]);
+        if(m1||m2){ inputs.forEach(i=>i.classList.add("ok")); solve(true); }
+        else {
+          const pm=(x,y)=>A.some(p=>e(x,p[0])&&e(y,p[1]));
+          [[0,1],[2,3]].forEach(([i,j])=>{ const g=pm(v[i],v[j]); inputs[i].classList.add(g?"ok":"bad"); inputs[j].classList.add(g?"ok":"bad"); });
+          cur.wrong++; feedback("bad","Mindestens ein Punkt stimmt noch nicht (rot markiert). Lesen Sie x und y genau am Gitter ab.");
+        }
+        return;
+      }
+      let all=true, any=false;
+      Q.fields.forEach((f,i)=>{
+        const v=parseNum(inputs[i].value); inputs[i].classList.remove("ok","bad");
+        if(isNaN(v)){ all=false; return; }
+        any=true;
+        if(Math.abs(v-Q.answer[f.k])<1e-9){ inputs[i].classList.add("ok"); } else { inputs[i].classList.add("bad"); all=false; }
+      });
+      if(all){ solve(true); }
+      else if(!any){ feedback("bad","Bitte tragen Sie Zahlen ein (Dezimalkomma ist erlaubt, Brüche wie −1/2 auch)."); }
+      else { cur.wrong++; feedback("bad","Mindestens ein Wert stimmt noch nicht (rot markiert). Tipp 1 und Tipp 2 helfen."); }
+    };
+    document.getElementById("check").onclick=check;
+    inputs.forEach(inp=>inp.addEventListener("keydown",e=>{ if(e.key==="Enter") check(); }));
+  } else if(Q.type==="tf"){
+    document.querySelectorAll(".tf .opt").forEach(btn=>{
+      btn.onclick=()=>{
+        if(cur.solved) return;
+        const v = btn.dataset.v==="true";
+        if(v===Q.truth){ btn.classList.add("right"); solve(true); }
+        else { cur.wrong++; btn.classList.add("wrong"); btn.disabled=true; feedback("bad","Das stimmt nicht. Prüfen Sie die Aussage noch einmal (Tipp 1)."); }
+      };
+    });
+  }
+}
+
+function feedback(kind,html){ const f=document.getElementById("fb"); f.innerHTML='<div class="fb '+kind+'">'+html+'</div>'; }
+
+function nextHint(){
+  const Q=cur.q, box=document.getElementById("hint"), b=document.getElementById("hbtn");
+  cur.hintLevel++;
+  if(cur.hintLevel===1){ box.innerHTML='<div class="hint"><small>TIPP 1</small>'+esc(Q.hint1)+'</div>'; b.textContent="Tipp 2"; }
+  else if(cur.hintLevel===2){ box.innerHTML+='<div class="hint"><small>TIPP 2</small>'+esc(Q.hint2)+'</div>'; b.textContent="Lösung zeigen"; }
+  else { box.innerHTML+='<div class="hint"><small>LÖSUNG</small>'+Q.solution+'</div>'; b.disabled=true; if(!cur.solved) solve(false, true); }
+}
+
+function solve(correct, viaSolution){
+  if(cur.solved) return;
+  cur.solved=true;
+  const st=state.stats[state.round];
+  const firstTry = correct && cur.wrong===0 && cur.hintLevel<3;
+  st.qs[state.q] = firstTry ? "first" : (correct ? "later" : "solution");
+  st.done = st.qs.filter(x=>x!==null).length;
+  st.first = st.qs.filter(x=>x==="first").length;
+  if(correct){
+    feedback("ok", (firstTry?"Richtig, gleich beim ersten Versuch! ":"Richtig! ")+'<div style="font-weight:500;margin-top:4px">'+cur.q.solution+'</div>');
+  } else {
+    feedback("bad","Lösung angezeigt. Rechnen Sie den Weg danach in Ruhe selbst nach.");
+  }
+  document.querySelectorAll("#opts .opt,.tf .opt").forEach(x=>{ x.disabled=true; });
+  if(cur.q.type==="mc"){ cur.opts.forEach((o,i)=>{ if(o.ok){ document.querySelector('#opts .opt[data-i="'+i+'"]').classList.add("right"); } }); }
+  if(cur.q.type==="tf"){ document.querySelector('.tf .opt[data-v="'+cur.q.truth+'"]').classList.add("right"); }
+  if(cur.q.type==="input"){ const c=document.getElementById("check"); if(c) c.disabled=true; }
+  const R=ROUNDS[state.round], last=state.q===R.questions.length-1;
+  const n=document.getElementById("next");
+  n.hidden=false; n.textContent = last ? (state.round===ROUNDS.length-1 ? "Zum Ergebnis" : "Nächste Runde") : "Weiter";
+  n.onclick=()=>{
+    if(!last){ state.q++; }
+    else if(state.round<ROUNDS.length-1){ state.round++; state.q=0; }
+    else { state.view="result"; }
+    render(); window.scrollTo({top:0,behavior:"smooth"});
+  };
+  renderNav();
+}
+
+function renderResult(){
+  let total=0, done=0, first=0;
+  ROUNDS.forEach((r,i)=>{ total+=r.questions.length; done+=state.stats[i].done; first+=state.stats[i].first; });
+  let h='<section class="card res"><div class="card-h"><b>Ihr Ergebnis</b><span>nur auf diesem Gerät sichtbar</span></div><div class="card-b">';
+  h+='<p class="q">Bearbeitet: '+done+' von '+total+' Aufgaben · gleich beim ersten Versuch richtig: <b>'+first+'</b></p>';
+  h+='<table><tr><th>RUNDE</th><th>ERSTER VERSUCH</th><th>WEITERÜBEN</th></tr>';
+  ROUNDS.forEach((r,i)=>{
+    const st=state.stats[i], n=r.questions.length;
+    let tag, cls;
+    if(st.done<n){ tag="noch offen"; cls="y"; }
+    else if(st.first/n>=0.8){ tag="sicher"; cls="g"; }
+    else if(st.first/n>=0.5){ tag="fast"; cls="y"; }
+    else { tag="üben"; cls="r"; }
+    h+='<tr><td>'+esc(r.name)+'</td><td>'+st.first+' / '+n+'</td><td><span class="tag '+cls+'">'+tag+'</span>'+(cls==="r"||cls==="y"?'<div style="font-size:13.5px;color:#5f6f7c;margin-top:3px">Im Heft: '+esc(r.heft)+'</div>':'')+'</td></tr>';
+  });
+  h+='</table>';
+  h+='<p style="font-size:15px">Tragen Sie Ihr Ergebnis in die <b>Ampel</b> im Heft ein und beginnen Sie mit den roten Themen. Fragen? Erst Sitznachbar:in, dann Frau Gunzelmann.</p>';
+  h+='<div class="row"><button class="btn ghost" id="again">Test neu starten</button></div></div></section>';
+  $main.innerHTML=h;
+  document.getElementById("again").onclick=()=>{ ROUNDS.forEach((r,i)=>{ state.stats[i]={done:0,first:0,qs:r.questions.map(()=>null)}; }); state.round=0; state.q=0; state.view="round"; render(); };
+}
+
+render();
+</script>
+</body>
+</html>
